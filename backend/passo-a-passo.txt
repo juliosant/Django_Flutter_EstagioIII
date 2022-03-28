@@ -1,0 +1,8 @@
+1. criar projeto
+2. instalar djangorestframework e adicionar em apps_installed
+3. após criar seu Model criar serializer (base de views e forms) e importar os campos em meta
+    https://www.django-rest-framework.org/tutorial/1-serialization/#using-modelserializers - Using ModelSerializers
+4. criar métodos de crud em views com módulo generics
+    https://www.django-rest-framework.org/tutorial/3-class-based-views/ - Using generic class-based views
+
+5. adicionar os os métodos na urls
