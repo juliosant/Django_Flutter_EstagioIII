@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:recycle_project/Constants/api.dart';
+import 'package:recycle_project/Constants/colors.dart';
 import 'package:recycle_project/Models/Agendamentos.dart';
 import 'package:recycle_project/Widgets/app_bar.dart';
 import 'package:recycle_project/Widgets/container_agendamentos.dart';
@@ -26,15 +27,22 @@ class _HomePageState extends State<HomePage>{
   var isLoad = true;
 
   void _showModel(){
+    String dia = "";
+    String hora = "";
+    String beneficiario = "";
+    String doador = "";
+    bool bool_encerrado = true;
+
     showModalBottomSheet(
         context: context,
         builder: (BuildContext context){
           return Container(
-            height: MediaQuery.of(context).size.height / 2,
+            height: MediaQuery.of(context).size.height / 1,
             color: Colors.green.shade100,
             child: Center(
               child: Column(
                 children: [
+
                   Text(
                     "Novo Agendamento",
                     style: TextStyle(
@@ -48,8 +56,37 @@ class _HomePageState extends State<HomePage>{
                   TextField(
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
+                      labelText: "Dia",
+                    ),
+                    onSubmitted: (value) {
+                      setState(() {
+                        dia = value;
+                      });
+                    },
+                  ),
+                  SizedBox(height: 10,),
+                  TextField(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: "Hora",
+                    ),
+                    onSubmitted: (value) {
+                      setState(() {
+                        hora = value;
+                      });
+                    },
+                  ),
+                  SizedBox(height: 10,),
+                  TextField(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
                       labelText: "Beneficiário",
                     ),
+                    onSubmitted: (value) {
+                      setState(() {
+                        beneficiario = value;
+                      });
+                    },
                   ),
                   SizedBox(height: 10,),
                   TextField(
@@ -57,9 +94,19 @@ class _HomePageState extends State<HomePage>{
                       border: OutlineInputBorder(),
                       labelText: "Doador",
                     ),
+                    onSubmitted: (value) {
+                      setState(() {
+                        doador = value;
+                      });
+                    },
                   ),
                   ElevatedButton(
-                    onPressed: null,
+                    onPressed: () => create_agendamento(
+                        dia: dia,
+                        hora: hora,
+                        beneficiario: beneficiario,
+                        doador: doador,
+                        bool_encerrado: bool_encerrado),
                     child: Text("Adicionar"),
                   ),
                 ],
@@ -70,6 +117,7 @@ class _HomePageState extends State<HomePage>{
         }
     );
   }
+
   void fetchData() async {
     try{
       http.Response response = await http.get(Uri.parse(api));
@@ -120,6 +168,47 @@ class _HomePageState extends State<HomePage>{
       print(e);
     }
   }
+  
+  void create_agendamento
+      ({
+        String dia = "",
+        String hora = "",
+        String beneficiario = "",
+        String doador = "",
+        bool bool_encerrado = false
+      }) async {
+    try {
+      http.Response response = await http.post(
+        Uri.parse(api),
+
+        headers: <String, String>{
+          "Content-Type": "application/json; charset=UTF-8"
+        },
+
+        body: jsonEncode(<String, dynamic>{
+          "dia": dia,
+          "hora": hora,
+          "beneficiario": beneficiario,
+          "doador": doador,
+          "bool_encerrado": bool_encerrado
+        }),
+      );
+      if (response.statusCode == 201) {
+        setState(() {
+          meusAgendamentos = [];
+        });
+        fetchData();
+        print('Criado');
+      }
+      else{
+        print('Deu ruim');
+      }
+    }
+    catch (e){
+      print(e);
+    }
+
+  }
 
   // Inicialização
   @override
@@ -132,7 +221,7 @@ class _HomePageState extends State<HomePage>{
   @override
   Widget build(BuildContext context){
     return Scaffold(
-      backgroundColor: Colors.lightGreen.shade50,
+      backgroundColor: bg, //Colors.lightGreen.shade50,
       appBar: customAppBar(),
       body:
         SingleChildScrollView(
@@ -167,7 +256,7 @@ class _HomePageState extends State<HomePage>{
           onPressed: () {
             _showModel();
           },
-          child: Icon(Icons.add),
+          child: const Icon(Icons.add),
           backgroundColor: Colors.green,
         ),
     );

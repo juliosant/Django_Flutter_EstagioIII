@@ -6,3 +6,4 @@
     https://www.django-rest-framework.org/tutorial/3-class-based-views/ - Using generic class-based views
 
 5. adicionar os os métodos na urls
+
